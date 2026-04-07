@@ -1,43 +1,41 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
 
   let [counter, setCounter] = useState(10);
-  // let counter = 10;
 
   const addValue = () => {
-    setCounter(prev => (prev < 32 ? prev + 1 : prev));
+    setCounter(counter + 1);
+    setCounter(prev => Math.min(prev + 1, 32));
+    setCounter(prev => Math.min(prev + 1, 32));
   }
 
   const removeValue = () => {
-    setCounter(prev => (prev > 2 ? prev - 1 : prev));
+    setCounter(counter - 1);
+    setCounter(prev => Math.max(prev - 1, 2));
   }
 
   return (
-    <>
-      <h1>Coffee, Cricket & Code !!</h1>
-      <h2>Counter Value: {counter}</h2>
+    <div id="center">
+      <h1>Coffee, Cricket & Code ☕</h1>
 
-      <button
-        onClick={addValue}
-        disabled={counter >= 32}
-      >
-        Add Value {counter}
-      </button>
+      <div className="counter-card">
+        <p className="counter-label">Counter Value</p>
+        <span className="counter-value">{counter}</span>
 
-      <br />
+        <div className="counter-buttons">
+          <button className="btn btn-add" onClick={addValue} disabled={counter >= 32}>
+            + Add
+          </button>
+          <button className="btn btn-remove" onClick={removeValue} disabled={counter <= 2}>
+            − Remove
+          </button>
+        </div>
 
-      <button
-        onClick={removeValue}
-        disabled={counter <= 2}
-      >
-        Remove Value {counter}
-      </button>
-    </>
+        <p className="counter-range">Range: 2 – 32</p>
+      </div>
+    </div>
   )
 }
 
