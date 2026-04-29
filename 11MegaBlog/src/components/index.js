@@ -4,6 +4,7 @@ import Conatiner from "./container/Container";
 import Logo from "./Logo";
 import Logout from "./Header/Logout";
 import RTE from "./RTE";
+import SignUp from './SignUp'
 
 export {
     Header,
@@ -11,5 +12,6 @@ export {
     Conatiner,
     Logo,
     Logout,
-    RTE
+    RTE,
+    SignUp
 }
