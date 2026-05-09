@@ -21,13 +21,13 @@ export class Service {
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
-                slug,
+                ID.unique(),
                 {
                     title,
                     content,
                     featuredImage,
                     status,
-                    userId
+                    user_id: userId
                 }
             )
         } catch (error) {
@@ -86,7 +86,6 @@ export class Service {
                 queries,
             )
         } catch (error) {
-            throw error
             return false
         }
     }
@@ -118,10 +117,10 @@ export class Service {
     }
 
     getFilePreview(fileId) {
-        return this.bucket.getFilePreview(
+        return this.bucket.getFileView(
             config.appwriteBucketId,
             fileId
-        )
+        ).toString()
     }
 }
 

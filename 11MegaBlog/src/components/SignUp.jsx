@@ -9,76 +9,81 @@ import { useForm } from "react-hook-form";
 function SignUp() {
     const navigate = useNavigate()
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
 
     const create = async (data) => {
         setError('')
+        setLoading(true)
         try {
             const userData = await authService.createAccount(data)
             if (userData) {
-                const userData = await authService.getCurrentUser()
-                if (userData) dispatch(login(userData));
+                const currentUser = await authService.getCurrentUser()
+                if (currentUser) dispatch(login(currentUser))
                 navigate('/')
             }
         } catch (error) {
             setError(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
     return (
-        <div className="flex items-center justify-center">
-            <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-                <div className="mb-2 flex justify-center">
-                    <span className="inline-block w-full max-w-[100px]">
-                        <Logo width="100%" />
-                    </span>
-                </div>
-                <h2 className="text-center text-2xl font-bold leading-tight">Sign up to create account</h2>
-                <p className="mt-2 text-center text-base text-black/60">
-                    Already have an account?&nbsp;
-                    <Link
-                        to="/login"
-                        className="font-medium text-primary transition-all duration-200 hover:underline"
-                    >
-                        Sign In
-                    </Link>
-                </p>
-                {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+        <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+            <div className="w-full max-w-md">
+                <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
+                    {/* Logo */}
+                    <div className="flex flex-col items-center mb-8">
+                        <div className="w-12 h-12 mb-4">
+                            <Logo width="100%" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-white">Create an account</h1>
+                        <p className="text-slate-400 text-sm mt-1">Start writing and sharing today</p>
+                    </div>
 
-                <form onSubmit={handleSubmit(create)}>
-                    <div className="space-y-5">
+                    {error && (
+                        <div className="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit(create)} className="space-y-5">
                         <Input
-                            label='Full Name: '
-                            placeholder="Enter your full name"
-                            {...register('name', {
-                                required: true,
-                            })}
+                            label='Full Name'
+                            placeholder="John Doe"
+                            {...register('name', { required: true })}
                         />
-                        <Input label='Email: '
-                            placeholder="Enter your email"
+                        <Input
+                            label='Email'
+                            placeholder="you@example.com"
                             type="email"
                             {...register('email', {
                                 required: true,
                                 validate: {
-                                    matchPattern: (value) => /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value) || 'Email address must be a valid address'
+                                    matchPattern: (value) => /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value) || 'Enter a valid email address'
                                 }
                             })}
                         />
                         <Input
-                            label='Password: '
+                            label='Password'
                             type='password'
-                            placeholder='Enter your password'
-                            {...register('password', {
-                                required: true,
-                            })}
+                            placeholder='••••••••'
+                            {...register('password', { required: true })}
                         />
-                        <Button
-                            type='submit'
-                            className='w-full'
-                        >Create Account</Button>
-                    </div>
-                </form>
+                        <Button type='submit' className='w-full' disabled={loading}>
+                            {loading ? 'Creating account...' : 'Create Account'}
+                        </Button>
+                    </form>
+
+                    <p className="mt-6 text-center text-sm text-slate-400">
+                        Already have an account?{' '}
+                        <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+                            Sign in
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     )
